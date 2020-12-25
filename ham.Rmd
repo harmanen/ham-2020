@@ -1,0 +1,36 @@
+---
+title: "Ham cooking"
+output: html_notebook
+---
+
+```{r}
+# Read packages
+library("dplyr")
+library("ggplot2")
+```
+
+```{r}
+# Read data
+raw_data <- read.table("raw_data", header = TRUE, sep = ",")
+```
+
+```{r}
+# Add time values to minutes after ham being removed from the fridge
+time_format = "%H:%M"
+time_out_of_fridge <- strptime("6:14", format=time_format)
+
+data <- mutate(
+  raw_data,
+  minutes = difftime(
+    strptime((time), format=time_format),
+    time_out_of_fridge,
+    units="mins",
+  )
+)
+
+ggplot(
+  data,
+  aes(as.numeric(minutes), temperature)
+) + geom_point()
+```
+
