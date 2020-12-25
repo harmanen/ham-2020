@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
-# Read packages
+# Packages
 library("dplyr")
 library("ggplot2")
 ```
@@ -12,10 +12,8 @@ library("ggplot2")
 ```{r}
 # Read data
 raw_data <- read.table("raw_data", header = TRUE, sep = ",")
-```
 
-```{r}
-# Add time values to minutes after ham being removed from the fridge
+# Add new time column: minutes after ham was removed from the fridge
 time_format = "%H:%M"
 time_out_of_fridge <- strptime("6:14", format=time_format)
 
@@ -27,7 +25,10 @@ data <- mutate(
     units="mins",
   )
 )
+```
 
+```{r}
+# Plot
 ggplot(
   data,
   aes(as.numeric(minutes), temperature)
