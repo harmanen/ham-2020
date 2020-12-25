@@ -1,0 +1,11 @@
+24.12
+6:14 out of the fridge, washing in cool water, drying with paper towel
+7:20 room temp 22.5 C (assumed to be constant throughout) 
+9:17 core reached 10 C, moved into cooking bag
+9:19 into the oven 200 C top + bottom heating
+9:57 lowered  oven to 100 C bottom heating
+11:52 out of the oven into foil in room temp
+13:18 done, juicy, not yet tender (knife required)
+
+25.12
+12:49 out of fride: dryish, a bit more tender but knife still required. Microwaving => juiciness is restored a bit
