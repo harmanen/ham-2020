@@ -20,18 +20,117 @@ time_out_of_fridge <- strptime("6:14", format=time_format)
 data <- mutate(
   raw_data,
   minutes = difftime(
-    strptime((time), format=time_format),
+    strptime(time, format=time_format),
     time_out_of_fridge,
     units="mins",
   )
 )
+
+# Time constants
+time_into_oven = as.numeric(
+  difftime(
+    strptime("9:19", format=time_format), 
+    time_out_of_fridge, 
+    units="mins",
+  )
+)
+
+time_oven_lower_temp = as.numeric(
+  difftime(
+    strptime("9:57", format=time_format), 
+    time_out_of_fridge, 
+    units="mins",
+  )
+)
+
+time_out_of_oven = as.numeric(
+  difftime(
+    strptime("11:52", format=time_format), 
+    time_out_of_fridge, 
+    units="mins",
+  )
+)
+
 ```
 
 ```{r}
 # Plot
-ggplot(
-  data,
-  aes(as.numeric(minutes), temperature)
-) + geom_point()
+colours <- c(
+  "DATA" = "#000000", 
+  "FRIDGE" = "#33CCFF",
+  "ROOM" = "#66FF33",
+  "HOT" = "#CC0000",
+  "WARM" = "#FFFF00"
+)
+
+background_data = data.frame(
+  x1=c(
+    -Inf,
+    0,
+    time_into_oven,
+    time_oven_lower_temp,
+    time_out_of_oven
+  ),
+  x2=c(0,
+       time_into_oven,
+       time_oven_lower_temp,
+       time_out_of_oven,
+       Inf
+  ),
+  colour=c(
+    colours["FRIDGE"],
+    colours["ROOM"],
+    colours["HOT"],
+    colours["WARM"],
+    colours["ROOM"]
+  )
+)
+
+alpha <- 0.2
+
+ggplot() +
+# Data points
+geom_point(
+  data=data, 
+  mapping=aes(
+      x = as.numeric(minutes),
+      y = temperature, 
+  )
+) +
+# Theme
+theme(plot.title = element_text(hjust = 0.5)) + # Center title
+# Title
+ggtitle("Ham core temperature") +
+# x axis
+scale_x_continuous(
+  name = "Time (min)",
+  breaks = seq(0,420,60),
+  minor_breaks = seq(0,420,60),
+  sec.axis = sec_axis(~ . / 60, name = "Time (h)")
+) +
+# y axis
+scale_y_continuous(
+  name = "Temperature (°C)",
+  breaks = seq(0,80,20),
+  minor_breaks = seq(0,80,20),
+) +
+# Background regions
+geom_rect(
+  data=background_data,
+  mapping=aes(
+    xmin=x1,
+    xmax=x2,
+    ymin=-Inf,
+    ymax=Inf,
+    fill=colour,
+  ),
+  alpha=alpha,
+) + 
+# Legend
+scale_fill_manual(
+  "Background", 
+  values=background_data$colour, 
+  labels=c("Fridge", "Room (22.5 °C)", "Oven (200 °C)", "Oven (100 °C)", "Room (22.5 °C)"),
+)
 ```
 
