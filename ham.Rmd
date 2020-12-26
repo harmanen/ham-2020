@@ -94,7 +94,7 @@ ggplot(
 cooling_data <- filter(data, minutes > 371)
 cooling_fit <- lm(temperature ~ minutes, cooling_data)
 
-tidy(early_fit)
+tidy(cooling_fit)
 
 ggplot(
     data=cooling_data, 
@@ -234,5 +234,7 @@ ggplot() +
     ),
     method = "lm", 
     col = "red",
-  ) 
+  )
+
+# ggsave("ham_2020.pdf")
 ```
