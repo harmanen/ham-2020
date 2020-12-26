@@ -168,27 +168,6 @@ ggplot() +
     breaks = seq(0,80,20),
     minor_breaks = seq(0,80,20),
   ) +
-  # Vertical lines and labels
-  geom_hline(
-    yintercept = 10,
-    linetype = "dashed",
-  ) +
-  annotate(
-    "label", 
-    x = 10, 
-    y = 10, 
-    label = "10 °C",
-  ) +
-  geom_hline(
-    yintercept = 73,
-    linetype = "dashed",
-  ) +
-  annotate(
-    "label", 
-    x = 10, 
-    y = 73, 
-    label = "73 °C",
-  ) +
   # Background regions
   geom_rect(
     data=background_data,
@@ -234,7 +213,57 @@ ggplot() +
     ),
     method = "lm", 
     col = "red",
+  ) +
+  # Vertical lines and labels
+  geom_hline(
+    yintercept = 10,
+    linetype = "dashed",
+  ) +
+  annotate(
+    "label", 
+    x = 10, 
+    y = 10, 
+    label = "10 °C",
+  ) +
+  geom_hline(
+    yintercept = 73,
+    linetype = "dashed",
+  ) +
+  annotate(
+    "label", 
+    x = 10, 
+    y = 73, 
+    label = "73 °C",
+  ) +
+  # Phase labels
+  annotate(
+    "label", 
+    x = 140, 
+    y = 2, 
+    size = 3,
+    label = "Phase I",
+  ) +
+  annotate(
+    "label", 
+    x = 203, 
+    y = 2, 
+    size = 3,
+    label = "Phase II",
+  ) +
+  annotate(
+    "label", 
+    x = 280, 
+    y = 2, 
+    size = 3,
+    label = "Phase III",
+  ) +
+  annotate(
+    "label", 
+    x = 390, 
+    y = 2, 
+    size = 3,
+    label = "Phase IV",
   )
-
+  
 # ggsave("ham_2020.pdf")
 ```
