@@ -7,6 +7,7 @@ output: html_notebook
 # Packages
 library("dplyr")
 library("ggplot2")
+library("broom")
 ```
 
 ```{r}
@@ -58,7 +59,7 @@ time_out_of_oven = as.numeric(
 early_data <- filter(data, temperature <= 10)
 early_fit <- lm(temperature ~ minutes, early_data)
 
-summary(early_fit)
+tidy(early_fit)
 
 ggplot(
     data=early_data, 
@@ -73,10 +74,10 @@ ggplot(
 
 ```{r}
 # Linear regression to heating in oven at 100 °C
-heating_data <- filter(data, between(minutes, time_oven_lower_temp, time_out_of_oven))
+heating_data <- filter(data, between(as.numeric(minutes), time_oven_lower_temp, time_out_of_oven))
 heating_fit <- lm(temperature ~ minutes, heating_data)
 
-summary(heating_fit)
+tidy(heating_fit)
 
 ggplot(
     data=heating_fit, 
@@ -93,7 +94,7 @@ ggplot(
 cooling_data <- filter(data, minutes > 371)
 cooling_fit <- lm(temperature ~ minutes, cooling_data)
 
-summary(early_fit)
+tidy(early_fit)
 
 ggplot(
     data=cooling_data, 
