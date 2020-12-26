@@ -54,6 +54,59 @@ time_out_of_oven = as.numeric(
 ```
 
 ```{r}
+# Linear regression to initial warming in room temp
+early_data <- filter(data, temperature <= 10)
+early_fit <- lm(temperature ~ minutes, early_data)
+
+summary(early_fit)
+
+ggplot(
+    data=early_data, 
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    )
+  ) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") 
+```
+
+```{r}
+# Linear regression to heating in oven at 100 °C
+heating_data <- filter(data, between(minutes, time_oven_lower_temp, time_out_of_oven))
+heating_fit <- lm(temperature ~ minutes, heating_data)
+
+summary(heating_fit)
+
+ggplot(
+    data=heating_fit, 
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    )
+  ) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") 
+```
+```{r}
+# Linear regression to cooling in room temp after maximum temperature
+cooling_data <- filter(data, minutes > 371)
+cooling_fit <- lm(temperature ~ minutes, cooling_data)
+
+summary(early_fit)
+
+ggplot(
+    data=cooling_data, 
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    )
+  ) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") 
+```
+
+```{r}
 # Plot
 colours <- c(
   "DATA" = "#000000", 
@@ -89,121 +142,70 @@ background_data = data.frame(
 alpha <- 0.2
 
 ggplot() +
-# Data points
-geom_point(
-  data=data, 
-  mapping=aes(
-      x = as.numeric(minutes),
-      y = temperature, 
+  # Data points
+  geom_point(
+    data=data, 
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    )
+  ) +
+  # Theme
+  theme(plot.title = element_text(hjust = 0.5)) + # Center title
+  # Title
+  ggtitle("Ham core temperature") +
+  # x axis
+  scale_x_continuous(
+    name = "Time (min)",
+    breaks = seq(0,420,60),
+    minor_breaks = seq(0,420,60),
+    sec.axis = sec_axis(~ . / 60, name = "Time (h)")
+  ) +
+  # y axis
+  scale_y_continuous(
+    name = "Temperature (°C)",
+    breaks = seq(0,80,20),
+    minor_breaks = seq(0,80,20),
+  ) +
+  # Vertical lines and labels
+  geom_hline(
+    yintercept = 10,
+    linetype = "dashed",
+  ) +
+  annotate(
+    "label", 
+    x = 10, 
+    y = 10, 
+    label = "10 °C",
+  ) +
+  geom_hline(
+    yintercept = 73,
+    linetype = "dashed",
+  ) +
+  annotate(
+    "label", 
+    x = 10, 
+    y = 73, 
+    label = "73 °C",
+  ) +
+  # Background regions
+  geom_rect(
+    data=background_data,
+    mapping=aes(
+      xmin=x1,
+      xmax=x2,
+      ymin=-Inf,
+      ymax=Inf,
+      fill=colour,
+    ),
+    alpha=alpha,
+  ) + 
+  # Legend
+  scale_fill_manual(
+    "Background", 
+    values=background_data$colour, 
+    labels=c("Fridge", "Room (22.5 °C)", "Oven (200 °C)", "Oven (100 °C)", "Room (22.5 °C)"),
   )
-) +
-# Theme
-theme(plot.title = element_text(hjust = 0.5)) + # Center title
-# Title
-ggtitle("Ham core temperature") +
-# x axis
-scale_x_continuous(
-  name = "Time (min)",
-  breaks = seq(0,420,60),
-  minor_breaks = seq(0,420,60),
-  sec.axis = sec_axis(~ . / 60, name = "Time (h)")
-) +
-# y axis
-scale_y_continuous(
-  name = "Temperature (°C)",
-  breaks = seq(0,80,20),
-  minor_breaks = seq(0,80,20),
-) +
-# Vertical lines and labels
-geom_hline(
-  yintercept = 10,
-  linetype = "dashed",
-) +
-annotate(
-  "label", 
-  x = 10, 
-  y = 10, 
-  label = "10 °C",
-) +
-geom_hline(
-  yintercept = 73,
-  linetype = "dashed",
-) +
-annotate(
-  "label", 
-  x = 10, 
-  y = 73, 
-  label = "73 °C",
-) +
-# Background regions
-geom_rect(
-  data=background_data,
-  mapping=aes(
-    xmin=x1,
-    xmax=x2,
-    ymin=-Inf,
-    ymax=Inf,
-    fill=colour,
-  ),
-  alpha=alpha,
-) + 
-# Legend
-scale_fill_manual(
-  "Background", 
-  values=background_data$colour, 
-  labels=c("Fridge", "Room (22.5 °C)", "Oven (200 °C)", "Oven (100 °C)", "Room (22.5 °C)"),
-)
-```
-```{r}
-# Linear regression to initial warming in room temp
-early_data <- filter(data, temperature <= 10)
-early_fit <- lm(temperature ~ minutes, early_data)
-
-summary(early_fit)
-
-ggplot(
-  data=early_data, 
-  mapping=aes(
-      x = as.numeric(minutes),
-      y = temperature, 
-  )
-) +
-geom_point() +
-stat_smooth(method = "lm", col = "red") 
 ```
 
-```{r}
-# Linear regression to heating in oven at 100 °C
-heating_data <- filter(data, between(minutes, time_oven_lower_temp, time_out_of_oven))
-heating_fit <- lm(temperature ~ minutes, heating_data)
-
-summary(heating_fit)
-
-ggplot(
-  data=heating_fit, 
-  mapping=aes(
-      x = as.numeric(minutes),
-      y = temperature, 
-  )
-) +
-geom_point() +
-stat_smooth(method = "lm", col = "red") 
-```
-```{r}
-# Linear regression to cooling in room temp after maximum temperature
-cooling_data <- filter(data, minutes > 371)
-cooling_fit <- lm(temperature ~ minutes, cooling_data)
-
-summary(early_fit)
-
-ggplot(
-  data=cooling_data, 
-  mapping=aes(
-      x = as.numeric(minutes),
-      y = temperature, 
-  )
-) +
-geom_point() +
-stat_smooth(method = "lm", col = "red") 
-```
 
