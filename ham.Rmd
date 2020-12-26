@@ -154,4 +154,56 @@ scale_fill_manual(
   labels=c("Fridge", "Room (22.5 °C)", "Oven (200 °C)", "Oven (100 °C)", "Room (22.5 °C)"),
 )
 ```
+```{r}
+# Linear regression to initial warming in room temp
+early_data <- filter(data, temperature <= 10)
+early_fit <- lm(temperature ~ minutes, early_data)
+
+summary(early_fit)
+
+ggplot(
+  data=early_data, 
+  mapping=aes(
+      x = as.numeric(minutes),
+      y = temperature, 
+  )
+) +
+geom_point() +
+stat_smooth(method = "lm", col = "red") 
+```
+
+```{r}
+# Linear regression to heating in oven at 100 °C
+heating_data <- filter(data, between(minutes, time_oven_lower_temp, time_out_of_oven))
+heating_fit <- lm(temperature ~ minutes, heating_data)
+
+summary(heating_fit)
+
+ggplot(
+  data=heating_fit, 
+  mapping=aes(
+      x = as.numeric(minutes),
+      y = temperature, 
+  )
+) +
+geom_point() +
+stat_smooth(method = "lm", col = "red") 
+```
+```{r}
+# Linear regression to cooling in room temp after maximum temperature
+cooling_data <- filter(data, minutes > 371)
+cooling_fit <- lm(temperature ~ minutes, cooling_data)
+
+summary(early_fit)
+
+ggplot(
+  data=cooling_data, 
+  mapping=aes(
+      x = as.numeric(minutes),
+      y = temperature, 
+  )
+) +
+geom_point() +
+stat_smooth(method = "lm", col = "red") 
+```
 
