@@ -56,7 +56,7 @@ time_out_of_oven = as.numeric(
 
 ```{r}
 # Linear regression to initial warming in room temp
-early_data <- filter(data, temperature <= 10)
+early_data <- filter(data, as.numeric(minutes) <= time_into_oven)
 early_fit <- lm(temperature ~ minutes, early_data)
 
 tidy(early_fit)
@@ -206,7 +206,33 @@ ggplot() +
     "Background", 
     values=background_data$colour, 
     labels=c("Fridge", "Room (22.5 °C)", "Oven (200 °C)", "Oven (100 °C)", "Room (22.5 °C)"),
-  )
+  ) +
+  # Fits
+  stat_smooth(
+    data=early_data,
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    ),
+    method = "lm", 
+    col = "red",
+  ) +
+  stat_smooth(
+    data=heating_data,
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    ),
+    method = "lm", 
+    col = "red",
+  ) +
+  stat_smooth(
+    data=cooling_data,
+    mapping=aes(
+        x = as.numeric(minutes),
+        y = temperature, 
+    ),
+    method = "lm", 
+    col = "red",
+  ) 
 ```
-
-
