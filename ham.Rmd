@@ -27,6 +27,16 @@ data <- mutate(
   )
 )
 
+# Write data to a file in LaTeX table format
+# latex_data <- mutate(data, end_of_line = " \\\\")
+# write.table(latex_data, 
+#             "data_latex.txt", 
+#             sep = " & ",
+#             row.names = FALSE,
+#             col.names = FALSE,
+#             quote = FALSE,
+# )
+
 # Time constants
 time_into_oven = as.numeric(
   difftime(
